@@ -14,7 +14,7 @@ def call(body) {
 
     print "microserviceBuilderPipeline : config = ${config}"
 
-    def jenkinsProject = ""
+    def jenkinsProject = "basic-spring-boot-build"
     def projectName = config.projectName
     def appName = config.appName
     def checkProjectName = ""
@@ -26,7 +26,7 @@ def call(body) {
             git credentialsId: "${config.credentialsId}", url: "${config.repo}"
         }
 
-        createProject(projectName, appName) 
+        createProject(projectName, appName, jenkinsProject) 
 
 	if ( "${config.buildType}" == "maven" ) {
             mavenCICD(projectName,appName,devTag)
@@ -39,9 +39,9 @@ def call(body) {
 
 }
 
-def createProject(String appProject, String appName) {
+def createProject(String appProject, String appName, String jenkinsProjectName) {
     stage('create project'){
-        def jenkinsProject = "basic-spring-boot-build"
+        def jenkinsProject = jenkinsProjectName
         def flag = ""
         sh 'oc login https://172.30.0.1:443 --insecure-skip-tls-verify -u admin -p admin'
         sh 'oc projects -q >> 123456.txt'
